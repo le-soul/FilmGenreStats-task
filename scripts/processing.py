@@ -50,24 +50,48 @@ class GenreAnalysis:
         """
         Perform the specified analysis based on the provided analysis type.
         """
-        if analysis_type == 'distribution':
-            self.explore_movie_distribution_by_genre()
-        elif analysis_type == 'average gross':
-            self.analyze_average_gross_by_genre()
-        elif analysis_type == 'average ts':
-            self.analyze_average_tickets_by_genre()
-        else:
-            print(f"Unknown analysis type: {analysis_type}")
+        try:
+            if analysis_type == 'distribution':
+                self.explore_movie_distribution_by_genre()
+            elif analysis_type == 'average gross':
+                self.analyze_average_gross_by_genre()
+            elif analysis_type == 'average ts':
+                self.analyze_average_tickets_by_genre()
+            else:
+                raise ValueError(f"Unknown analysis type: {analysis_type}")
+        except ValueError as e:
+            print(f"Error: {e}")
 
+class FilterData:
+    """
+    Class to filter data by various criteria
+    """
+    def __init__(self, df):
+        self.df = df
+
+    def filter_by_year(self, year):
+        """
+        Filter data by a given year
+        """
+        return self.df[self.df["Year"] == year]
+
+    def filter_by_genre(self, genre):
+        """
+        Filter data by a given genre
+        """
+        return self.df[self.df["Genre"] == genre]
 
 @click.command(short_help="Parser to manage inputs for FilmGenreStats")
 @click.option("-id", "--input_data", required=True, help="Path to my Input dataset")
 @click.option("-o", "--output", default="outputs", help="Folder to save all outputs")
 @click.option("-a", "--analysis", is_flag=True, help="Analyse the data or not")
 @click.option("-g", "--genre", type=str, help="Type of movie analysis (distribution, average, popular_genre)")
+@click.option("-f", "--filtering", is_flag=True, help="Set a filtering or not")
+@click.option("-y", "--year", type=int, help="Filter films by year")
+@click.option("-fg", "--fgenre", type=str, help="Filter films by genre")
 
 
-def main(input_data, output, analysis, genre):
+def main(input_data, output, analysis, genre, filtering, year, fgenre):
     """
     Deal with the input data and send it to other function
     """
@@ -82,9 +106,9 @@ def main(input_data, output, analysis, genre):
         print("I am analysing")
 
         if genre:
-            genre_analysis = GenreAnalysis(df)
-            genre_analysis.perform_analysis(genre)
-
+            GenreAnalysis(df).perform_analysis(genre)
+            if not os.path.exists(output):
+                os.makedirs(output)
             # Save the plots
             if genre == 'distribution':
                 plt.savefig(f"{output}/DistributionPlot.png")
@@ -92,6 +116,15 @@ def main(input_data, output, analysis, genre):
                 plt.savefig(f"{output}/AverageGrossforEachGenre.png")
             elif genre == 'average ts':
                 plt.savefig(f"{output}/AverageTicketsSoldforEachGenre.png")
+
+    if filtering:
+        print("I am filtering")
+
+        if year:
+            df = FilterData(df).filter_by_year(year)
+        
+        elif fgenre:
+            df = FilterData(df).filter_by_genre(genre)
 
     try:
         df.to_csv(f"{output}/FilmGenreStatsAnalysis.csv", index=None)
