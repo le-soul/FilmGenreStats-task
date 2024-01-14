@@ -6,7 +6,7 @@ import pandas as pd
 import click
 import matplotlib.pyplot as plt
 import os
-
+#I tried doing a cleaning class but there were no null values and no duplicates
 class GenreAnalysis:
     """
     Class for analyzing and visualizing movie genre statistics.
@@ -80,6 +80,18 @@ def main(input_data, output, analysis, genre):
     
     if analysis:
         print("I am analysing")
+
+        if genre:
+            genre_analysis = GenreAnalysis(df)
+            genre_analysis.perform_analysis(genre)
+
+            # Save the plots
+            if genre == 'distribution':
+                plt.savefig(f"{output}/DistributionPlot.png")
+            elif genre == 'average gross':
+                plt.savefig(f"{output}/AverageGrossforEachGenre.png")
+            elif genre == 'average ts':
+                plt.savefig(f"{output}/AverageTicketsSoldforEachGenre.png")
 
     try:
         df.to_csv(f"{output}/FilmGenreStatsAnalysis.csv", index=None)
