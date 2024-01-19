@@ -17,8 +17,8 @@ class FilterData:
         """
         return self.df[self.df["Year"] == year]
 
-    def filter_by_genre(self, genre):
+    def filter_by_genre(self, fgenre):
         """
         Filter data by a given genre
         """
-        return self.df[self.df["Genre"] == genre]
+        return self.df[self.df["Genre"] == fgenre]
