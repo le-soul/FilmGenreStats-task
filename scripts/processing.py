@@ -52,18 +52,11 @@ def analysis_(df, genre, output):
 @click.option("-id", "--input_data", required=True, help="Path to my Input dataset")
 @click.option("-o", "--output", default="outputs", help="Folder to save all outputs")
 @click.option("-a", "--analysis", is_flag=True, help="Analyse the data or not")
-@click.option(
-    "-g",
-    "--genre",
-    type=str,
-    help="Type of movie analysis (distribution, average, popular_genre)",
-)
+@click.option("-g","--genre", type=str, help="Type of movie analysis (distribution, average, popular_genre)")
 @click.option("-f", "--filtering", is_flag=True, help="Set a filtering or not")
 @click.option("-y", "--year", type=int, help="Filter films by year")
 @click.option("-fg", "--fgenre", type=str, help="Filter films by genre")
-@click.option(
-    "-t", "--tickets", type=int, help="Filter films by tickets sold, more than"
-)
+@click.option("-t", "--tickets", type=int, help="Filter films by tickets sold, more than")
 def main(input_data, output, analysis, genre, filtering, year, fgenre, tickets):
     """
     Deal with the input data and send it to other function
