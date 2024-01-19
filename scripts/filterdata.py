@@ -22,3 +22,9 @@ class FilterData:
         Filter data by a given genre
         """
         return self.df[self.df["Genre"] == fgenre]
+
+    def filter_by_tickets(self, tickets):
+        """
+        Filter data by a given tickets sold
+        """
+        return self.df[self.df["Tickets Sold"] > tickets]
